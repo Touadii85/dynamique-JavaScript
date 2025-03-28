@@ -5,7 +5,7 @@
   "main": "pieces.js",
   "scripts": {
     "start":"http-server",
-    "dev":"http-server"
+    "dev": "http-server"
   },
   "repository": {
     "type": "git",
