@@ -1,5 +1,4 @@
 // Récupération des données du fichier JSON contenant les pièces automobiles
-
 const reponse = await fetch('pieces-autos.json'); // Envoie une requête pour récupérer le fichier JSON
 const pieces = await reponse.json(); // Transforme la réponse en un objet JSON (les données des pièces)
 import { ajoutListenersAvis } from "./avis.js";
@@ -40,11 +39,10 @@ function genererPieces(pieces){
         const stockElement = document.createElement("p");
         stockElement.innerText = article.disponibilite ? "En stock" : "Rupture de stock"; // Affiche si la pièce est en stock ou non
 
-        //Code ajouté
         const avisBouton = document.createElement("button");
         avisBouton.dataset.id = article.id;
         avisBouton.textContent = "Afficher les avis";
-
+        
         // Ajoute l'élément 'article' à la section d'affichage des fiches
         sectionFiches.appendChild(pieceElement);
 
@@ -55,9 +53,8 @@ function genererPieces(pieces){
         pieceElement.appendChild(categorieElement);
         pieceElement.appendChild(descriptionElement);
         pieceElement.appendChild(stockElement);
-        pieceElement.appendChild(avisBouton);
-    }
-    // Ajout de la fonction ajoutListenersAvis
+        pieceElement.appendChild(avisBouton)
+    }// Ajout de la fonction ajoutListenersAvis
     ajoutListenersAvis();
 }
 
