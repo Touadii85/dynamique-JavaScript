@@ -4,7 +4,48 @@ export function ajoutListenersAvis() {
     for (let i = 0; i < piecesElements.length; i++) {
       piecesElements[i].addEventListener("click", async function (event) {
         const id = event.target.dataset.id;
-        fetch(`http://localhost:8081/pieces/${id}/avis`);
+        const reponse = await fetch(`http://localhost:8081/pieces/${id}/avis`);
+        const avis = await reponse.json()
+        window.localStorage.setItem(`avis-piece-${id}`, JSON.stringify(avis))
+        const pieceElement = event.target.parentElement
+        afficherAvis(piecesElements, avis)
       });
     }
+}
+
+
+export function afficherAvis(pieceElement, avis){
+  const avisElement = document.createElement("p");
+        for (let i = 0; i < avis.length; i++) {
+          avisElement.innerHTML += `${avis[i].utilisateur}: ${avis[i].commentaire} <br>`;
+        }
+        pieceElement.appendChild(avisElement); // Here it is corrected
+}
+
+
+export function ajoutListenerEnvoyerAvis() {
+  const formulaireAvis = document.querySelector(".formulaire-avis");
+  formulaireAvis.addEventListener("submit", function (event) {
+    // Désactivation du comportement par défaut du navigateur
+    event.preventDefault();
+
+    // Création de l’objet du nouvel avis.
+    const avis = {
+      pieceId: parseInt(event.target.querySelector("[name=piece-id]").value),
+      utilisateur: event.target.querySelector("[name=utilisateur").value,
+      commentaire: event.target.querySelector("[name=commentaire]").value,
+      nbEtoiles: parseInt(event.target.querySelector("[name=nbEtoiles]"))
+    }
+
+    // Création de la charge utile au format JSON
+    const chargeUtile = JSON.stringify(avis);
+
+    // Appel de la fonction fetch avec toutes les informations nécessaires
+    fetch("http://localhost:8081/avis", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: chargeUtile
+    });
+
+  })
 }

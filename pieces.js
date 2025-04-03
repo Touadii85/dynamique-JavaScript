@@ -1,7 +1,20 @@
-// Récupération des données du fichier JSON contenant les pièces automobiles
-const reponse = await fetch('pieces-autos.json'); // Envoie une requête pour récupérer le fichier JSON
-const pieces = await reponse.json(); // Transforme la réponse en un objet JSON (les données des pièces)
-import { ajoutListenersAvis } from "./avis.js";
+import { ajoutListenersAvis, ajoutListenerEnvoyerAvis, afficherAvis } from "./avis.js";
+//Récupération des pièces eventuellement stockées dans le localStorage
+let pieces = window.localStorage.getItem('pieces');
+
+if (pieces === null){
+    // Récupération des pièces depuis l'API
+    const reponse = await fetch('http://localhost:8081/pieces/');
+    pieces = await reponse.json();
+    // Transformation des pièces en JSON
+    const valeurPieces = JSON.stringify(pieces);
+    // Stockage des informations dans le localStorage
+    window.localStorage.setItem("pieces", valeurPieces);
+}else{
+    pieces = JSON.parse(pieces);
+}
+// on appel la fonction pour ajouter le listener au formulaire
+ajoutListenerEnvoyerAvis()
 
 // Fonction pour générer l'affichage des pièces dans la page
 function genererPieces(pieces){
@@ -60,6 +73,11 @@ function genererPieces(pieces){
 
 // Appel de la fonction pour générer les pièces à partir des données récupérées
 genererPieces(pieces);
+
+for(avis !== null){
+    const pieceElement = document.querySelector(`article[data-id="${id}"]`)
+    afficherAvis(pieceElement, avis)
+}
 
 // Gestion des événements pour trier les pièces par prix (croissant)
 const boutonTrier = document.querySelector(".btn-trier");
@@ -165,4 +183,10 @@ inputPrixMax.addEventListener('input', function (){
     });
     document.querySelector(".fiches").innerHTML = ''; // Efface le contenu précédent
     genererPieces(piecesFiltrees); // Affiche les pièces filtrées
+});
+
+// Ajout du listener pour mettre à jour des données du localStorage
+const boutonMettreAJour = document.querySelector(".btn-maj");
+boutonMettreAJour.addEventListener("click", function () {
+   window.localStorage.removeItem("pieces");
 });
